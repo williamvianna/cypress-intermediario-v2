@@ -13,7 +13,6 @@
 #         with:
 #           config-file: cypress.config.js
 
-
 name: End-to-end tests 🧪
 
 on:
@@ -32,9 +31,9 @@ jobs:
 
     services:
       my-service:
-        image: my-service-image  # Substitua pela imagem do seu serviço se estiver usando Docker
+        image: my-service-image # Substitua pela imagem do seu serviço se estiver usando Docker
         ports:
-          - 3000:3000            # Certifique-se de que esta porta é a mesma que a usada pelo seu serviço
+          - 3000:3000 # Certifique-se de que esta porta é a mesma que a usada pelo seu serviço
         options: --health-cmd="curl --silent --fail http://localhost:3000/health" --health-interval=10s
 
     steps:
@@ -45,12 +44,9 @@ jobs:
         run: npm ci
 
       - name: Start server
-        run: npm start &
-        env:
-          NODE_ENV: test
-        # Adicione um atraso para garantir que o servidor esteja totalmente iniciado
-        # Se o servidor for iniciado por um comando diferente, ajuste conforme necessário
-        run: sleep 10
+        run: |
+          npm start &
+          sleep 10
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6

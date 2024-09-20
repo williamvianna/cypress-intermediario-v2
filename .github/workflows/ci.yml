@@ -1,14 +1,44 @@
-name: End-to-end tests 🧪
+# name: End-to-end tests 🧪
+# on: [push]
+# jobs:
+#   cypress-run:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#       # Install NPM dependencies, cache them correctly
+#       # and run all Cypress tests
+#       - name: Cypress run
+#         uses: cypress-io/github-action@v6
+#         with:
+#           config-file: cypress.config.js
+
+name: CI for Cypress
+
 on: [push]
+
 jobs:
-  cypress-run:
-    runs-on: ubuntu-20.04
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      my-service:
+        image: my-service-image
+        ports:
+          - 3000:3000
+        options: --health-cmd="curl --silent --fail http://localhost:3000/health" --health-interval=10s
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
-      - name: Cypress run
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start server
+        run: npm start &
+
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          config-file: cypress.config.js
+          start: npm start
